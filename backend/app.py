@@ -835,8 +835,11 @@ def upload_image():
         # -----------------------------------------------------
         # PEST MODEL
         # -----------------------------------------------------
-        pest_result = detect_pests(processing_image)
-
+      pest_result = {
+    "detected": False,
+    "pests": [],
+    "confidence": None,
+}
         image_url = f"/uploads/{filename}"
 
         return jsonify({
