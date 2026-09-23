@@ -49,12 +49,39 @@ PEST_CONFIDENCE = float(
     os.getenv("CROPCARE_PEST_CONFIDENCE", "0.50")
 )
 
-INDOOR_MODEL_PATH = BACKEND_DIR / "indoor_model.pth"
-INDOOR_CLASSES_PATH = BACKEND_DIR / "indoor_classes.json"
+HF_MODEL_REPO = "tasmi-0609/cropcare-ai-models"
 
-PLANTDOC_PLANTWILD_MODEL_PATH = BACKEND_DIR / "plantdoc_plantwild_model.pth"
-PLANTDOC_PLANTWILD_CLASSES_PATH = BACKEND_DIR / "plantdoc_plantwild_classes.json"
+INDOOR_MODEL_PATH = Path(
+    hf_hub_download(
+        repo_id=HF_MODEL_REPO,
+        filename="indoor_model.pth",
+        token=os.getenv("HF_TOKEN"),
+    )
+)
 
+INDOOR_CLASSES_PATH = Path(
+    hf_hub_download(
+        repo_id=HF_MODEL_REPO,
+        filename="indoor_classes.json",
+        token=os.getenv("HF_TOKEN"),
+    )
+)
+
+PLANTDOC_PLANTWILD_MODEL_PATH = Path(
+    hf_hub_download(
+        repo_id=HF_MODEL_REPO,
+        filename="plantdoc_plantwild_model.pth",
+        token=os.getenv("HF_TOKEN"),
+    )
+)
+
+PLANTDOC_PLANTWILD_CLASSES_PATH = Path(
+    hf_hub_download(
+        repo_id=HF_MODEL_REPO,
+        filename="plantdoc_plantwild_classes.json",
+        token=os.getenv("HF_TOKEN"),
+    )
+)
 # Plant species supported by the PlantVillage classifier.
 # These keys must match the plant names used by the frontend selector.
 PLANTVILLAGE_PLANT_ALIASES = {
