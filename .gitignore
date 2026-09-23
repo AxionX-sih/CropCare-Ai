@@ -1,0 +1,10 @@
+dataset/
+weights/
+backend/uploads/
+*.pth
+*.pt
+*.zip
+__pycache__/
+*.pyc
+.venv/
+venv/

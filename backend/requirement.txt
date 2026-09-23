@@ -1,0 +1,7 @@
+Flask
+python-dotenv
+Pillow
+transformers
+torch
+supabase
+ultralytics
