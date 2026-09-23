@@ -12,7 +12,7 @@ import torch.nn as nn
 from torchvision import models, transforms
 from transformers import pipeline
 from supabase import create_client
-
+from huggingface_hub import hf_hub_download
 
 # =========================================================
 # CROPCARE AI — BACKEND
