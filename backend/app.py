@@ -1,4 +1,7 @@
 import os
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+
 import json
 import re
 from pathlib import Path
@@ -10,7 +13,10 @@ from PIL import Image
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
-from transformers import pipeline
+
+# Keep CPU/thread memory usage low on Render Free (512 MiB).
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
 from supabase import create_client
 from huggingface_hub import hf_hub_download
 
@@ -125,20 +131,7 @@ _indoor_transform = transforms.Compose([
     transforms.Normalize(INDOOR_MEAN, INDOOR_STD),
 ])
 
-_disease_classifier = None
 _pest_detector = None
-
-
-def get_classifier():
-    global _disease_classifier
-
-    if _disease_classifier is None:
-        _disease_classifier = pipeline(
-            "image-classification",
-            model=MODEL_NAME
-        )
-
-    return _disease_classifier
 
 
 def get_indoor_model():
@@ -224,57 +217,6 @@ def _plantvillage_matches(label, plant_name):
         for alias in aliases
     )
 
-
-def predict_plantvillage(image, plant_name):
-    """
-    Run the PlantVillage classifier and filter results to the selected plant.
-
-    This prevents a Strawberry upload from being displayed as Tomato simply
-    because Tomato received the highest score across all PlantVillage classes.
-    """
-    classifier = get_classifier()
-
-    # PlantVillage has 38 classes; request them all so the selected plant's
-    # classes can be found before filtering.
-    results = classifier(
-        image,
-        top_k=38,
-    )
-
-    selected_results = [
-        item
-        for item in results
-        if _plantvillage_matches(
-            item.get("label", ""),
-            plant_name,
-        )
-    ]
-
-    # For a PlantVillage-supported plant, only return that plant's classes.
-    if selected_results:
-        results = selected_results
-
-    predictions = [
-        {
-            "label": str(item.get("label", "Unknown")),
-            "score": round(float(item.get("score", 0)) * 100, 2),
-        }
-        for item in results[:5]
-    ]
-
-    if not predictions:
-        predictions = [
-            {
-                "label": "Unknown",
-                "score": 0.0,
-            }
-        ]
-
-    return (
-        predictions[0]["label"],
-        predictions[0]["score"],
-        predictions,
-    )
 
 
 def predict_general(image):
