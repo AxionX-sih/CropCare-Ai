@@ -704,23 +704,17 @@ def detect_pests(pil_image):
 
 @app.route("/")
 def home():
-    response = send_from_directory(BASE_DIR, "crop.html")
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    return response
+    return send_from_directory(BASE_DIR, "crop.html")
 
 
 @app.route("/crop.html")
 def crop_page():
-    response = send_from_directory(BASE_DIR, "crop.html")
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    return response
+    return send_from_directory(BASE_DIR, "crop.html")
 
 
 @app.route("/script.js")
 def script():
-    response = send_from_directory(BASE_DIR, "script.js")
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    return response
+    return send_from_directory(BASE_DIR, "script.js")
 
 
 @app.route("/style.css")
@@ -735,8 +729,6 @@ def style():
 @app.route("/upload", methods=["POST"])
 def upload_image():
     try:
-        print("POST /upload received", flush=True)
-
         if "image" not in request.files:
             return jsonify({
                 "success": False,
