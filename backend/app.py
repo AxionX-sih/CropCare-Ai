@@ -10,6 +10,7 @@ from PIL import Image
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
+from transformers import pipeline
 from supabase import create_client
 from huggingface_hub import hf_hub_download
 
@@ -124,7 +125,20 @@ _indoor_transform = transforms.Compose([
     transforms.Normalize(INDOOR_MEAN, INDOOR_STD),
 ])
 
+_disease_classifier = None
 _pest_detector = None
+
+
+def get_classifier():
+    global _disease_classifier
+
+    if _disease_classifier is None:
+        _disease_classifier = pipeline(
+            "image-classification",
+            model=MODEL_NAME
+        )
+
+    return _disease_classifier
 
 
 def get_indoor_model():
@@ -208,6 +222,58 @@ def _plantvillage_matches(label, plant_name):
     return any(
         normalized.startswith(alias) or alias in normalized
         for alias in aliases
+    )
+
+
+def predict_plantvillage(image, plant_name):
+    """
+    Run the PlantVillage classifier and filter results to the selected plant.
+
+    This prevents a Strawberry upload from being displayed as Tomato simply
+    because Tomato received the highest score across all PlantVillage classes.
+    """
+    classifier = get_classifier()
+
+    # PlantVillage has 38 classes; request them all so the selected plant's
+    # classes can be found before filtering.
+    results = classifier(
+        image,
+        top_k=38,
+    )
+
+    selected_results = [
+        item
+        for item in results
+        if _plantvillage_matches(
+            item.get("label", ""),
+            plant_name,
+        )
+    ]
+
+    # For a PlantVillage-supported plant, only return that plant's classes.
+    if selected_results:
+        results = selected_results
+
+    predictions = [
+        {
+            "label": str(item.get("label", "Unknown")),
+            "score": round(float(item.get("score", 0)) * 100, 2),
+        }
+        for item in results[:5]
+    ]
+
+    if not predictions:
+        predictions = [
+            {
+                "label": "Unknown",
+                "score": 0.0,
+            }
+        ]
+
+    return (
+        predictions[0]["label"],
+        predictions[0]["score"],
+        predictions,
     )
 
 
@@ -638,17 +704,23 @@ def detect_pests(pil_image):
 
 @app.route("/")
 def home():
-    return send_from_directory(BASE_DIR, "crop.html")
+    response = send_from_directory(BASE_DIR, "crop.html")
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return response
 
 
 @app.route("/crop.html")
 def crop_page():
-    return send_from_directory(BASE_DIR, "crop.html")
+    response = send_from_directory(BASE_DIR, "crop.html")
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return response
 
 
 @app.route("/script.js")
 def script():
-    return send_from_directory(BASE_DIR, "script.js")
+    response = send_from_directory(BASE_DIR, "script.js")
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return response
 
 
 @app.route("/style.css")
@@ -663,6 +735,8 @@ def style():
 @app.route("/upload", methods=["POST"])
 def upload_image():
     try:
+        print("POST /upload received", flush=True)
+
         if "image" not in request.files:
             return jsonify({
                 "success": False,
@@ -702,14 +776,12 @@ def upload_image():
             crop_name, disease_name = get_indoor_info(indoor_label)
             model_source = "Indoor Plant Disease Model"
 
-        elif False:
-            # PlantVillage is the primary model for its supported plants.
-            label, confidence, predictions = predict_plantvillage(
-                processing_image,
-                plant_name,
-            )
+        elif plant_name_key in PLANTVILLAGE_PLANT_ALIASES:
+            # Use the local PlantDoc + PlantWild model on Render.
+            # This avoids loading the much larger PlantVillage Transformer.
+            label, confidence, predictions = predict_general(processing_image)
 
-            crop_name = plant_name or "PlantVillage Plant"
+            crop_name = plant_name or "Plant"
 
             if "___" in label:
                 _, disease_name = label.split("___", 1)
@@ -717,7 +789,7 @@ def upload_image():
             else:
                 disease_name = label.replace("_", " ").strip()
 
-            model_source = "PlantVillage Model"
+            model_source = "PlantDoc + PlantWild Model"
 
         else:
             label, confidence, predictions = predict_general(processing_image)

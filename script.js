@@ -3948,11 +3948,16 @@ document.addEventListener(
 
         setupDarkMode();
 
+        // Analyze is bound first so another startup function cannot block it.
+        try {
+            setupAnalyze();
+        } catch (error) {
+            console.error("Analyze setup error:", error);
+        }
+
         setupUpload();
 
         setupCamera();
-
-        setupAnalyze();
 
         setupChat();
 
