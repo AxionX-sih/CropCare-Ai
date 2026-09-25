@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CropCare AI — multilingual plant disease detection, recovery guidance and voice assistance.">
+<title>CropCare AI | Plant Health Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="navbar">
+<a class="brand" href="#home" aria-label="CropCare AI Home"><span class="brand-mark">🌱</span><span class="brand-text"><b>CropCare</b><small>AI</small></span></a>
+<nav class="nav-links" aria-label="Main navigation">
+<a href="#detect" data-i18n="navDetect">Detect</a><a href="#library" data-i18n="navLibrary">Plant Library</a><a href="#recovery" data-i18n="navRecovery">Recovery</a><a href="#assistant" data-i18n="navAssistant">AI Assistant</a>
+</nav>
+<div class="v3-controls">
+<label class="language-control"><span class="sr-only">Language</span><select id="languageSelect" aria-label="Select language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option><option value="gu">ગુજરાતી</option><option value="bn">বাংলা</option><option value="ta">தமிழ்</option><option value="te">తెలుగు</option><option value="kn">ಕನ್ನಡ</option><option value="ml">മലയാളം</option><option value="pa">ਪੰਜਾਬੀ</option></select></label>
+<button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode"><span id="themeIcon">☾</span><span id="themeLabel">Dark</span></button>
+<button class="nav-cta" type="button" onclick="startDetection()" data-i18n="tryNow">Try Now →</button>
+</div>
+</header>
+<main id="home">
+<section class="hero" id="hero"><div class="hero-copy"><div class="eyebrow">✦ AI PLANT HEALTH • MULTILINGUAL • VOICE READY</div>
+<h1 data-i18n="heroTitle">A smarter way to <span>care for every plant.</span></h1>
+<p data-i18n="heroText">Upload a leaf photo, select the plant type, understand the possible disease, and get simple recovery steps in a language you understand.</p>
+<div class="hero-actions"><button class="btn primary-btn" type="button" onclick="startDetection()" data-i18n="checkPlant">Check My Plant →</button><a class="btn secondary-btn" href="#library" data-i18n="exploreLibrary">Explore Plant Library</a></div>
+<div class="hero-points"><span>📷 Image analysis</span><span>🌐 10 languages</span><span>🔊 Voice guidance</span><span>💬 AI chat</span></div></div>
+<div class="hero-visual"><div class="hero-card"><div class="card-row"><div><small>PLANT HEALTH</small><h3>AI Scan</h3></div><span class="status">● Ready</span></div><div class="leaf-scene"><div class="scan"></div><div class="plant-art">🌿</div><span class="tag tag1">🤖 AI</span><span class="tag tag2">🔊 Voice</span></div><div class="score"><div><small>Health insight</small><b>92%</b></div><div class="progress"><i style="width:92%"></i></div></div></div></div></section>
+<section class="section detect-section" id="detect"><div class="heading"><small>STEP 01 · DETECTION</small><h2 data-i18n="detectTitle">Let CropCare AI inspect your plant.</h2><p data-i18n="detectText">Use a photo or camera. For the best result, capture one clear leaf in good light.</p></div>
+<div class="detect-grid"><div class="panel"><div class="panel-title"><span class="icon">📷</span><div><small>INPUT</small><h3 data-i18n="uploadTitle">Upload or capture</h3></div></div>
+<div class="selectors"><label><span data-i18n="plantType">Plant type</span><select id="plantType"><option value="crop">🌾 Crop / Farm Plant</option><option value="vegetable">🥬 Vegetable</option><option value="fruit">🍎 Fruit Plant</option><option value="indoor">🪴 Indoor Plant</option></select></label>
+<label><span data-i18n="plantName">Plant / crop</span><select id="plantName"><option value="">Select a plant</option></select></label></div>
+<label class="dropzone" id="dropZone" for="cropImage"><span class="upload-icon">↑</span><b data-i18n="chooseImage">Choose a clear plant image</b><small data-i18n="browse">Click to browse • JPG / PNG / WEBP</small></label>
+<input id="cropImage" type="file" accept="image/*">
+<div class="camera-area"><button class="btn secondary-btn full" id="startCamera" type="button" data-i18n="useCamera">📷 Use Camera</button><div class="camera-container" id="cameraContainer"><video id="camera" autoplay playsinline></video><div class="camera-actions"><button class="btn primary-btn" id="captureImage" type="button" data-i18n="capture">Capture</button><button class="btn secondary-btn" id="stopCamera" type="button" data-i18n="stop">Stop</button></div></div></div>
+<div id="preview" class="preview"><div class="preview-empty"><span>🌱</span><small data-i18n="previewText">Your image preview appears here</small></div></div>
+<div class="tips"><span>☀️ Good light</span><span>🍃 Clear leaf</span><span>🎯 Close view</span></div>
+<p id="uploadMessage" class="message" aria-live="polite"></p>
+<button id="analyzeButton" class="btn primary-btn full" type="button" data-i18n="analyze">Analyze with CropCare AI →</button>
+<p class="privacy">🔒 Images are sent to your configured analysis server.</p></div>
+<div class="panel result-panel"><div class="panel-title"><span class="icon">🤖</span><div><small>AI RESULT</small><h3 data-i18n="resultTitle">Plant health report</h3></div><span class="status">● Live</span></div><div id="result" class="result"><div class="empty"><div>🌿</div><h3 data-i18n="noResult">No analysis yet</h3><p data-i18n="noResultText">Upload a plant image and your report will appear here.</p></div></div></div></div></section>
+<section class="section library" id="library"><div class="heading"><small>PLANT LIBRARY</small><h2 data-i18n="libraryTitle">From farm crops to indoor plants.</h2><p data-i18n="libraryText">A structured catalog makes the same experience useful for farmers, gardeners and home-plant owners.</p></div>
+<div class="library-tools"><div class="searchbox"><span>🔎</span><input id="plantSearch" type="search" placeholder="Search plant..." aria-label="Search plant" data-i18n-placeholder="searchPlant"></div><div class="chips" id="categoryChips"><button class="chip active" type="button" data-category="all" data-i18n="all">All</button><button class="chip" type="button" data-category="crop" data-i18n="crops">Crops</button><button class="chip" type="button" data-category="vegetable" data-i18n="vegetables">Vegetables</button><button class="chip" type="button" data-category="fruit" data-i18n="fruits">Fruits</button><button class="chip" type="button" data-category="indoor" data-i18n="indoor">Indoor</button></div></div><div class="plant-grid" id="plantGrid"></div></section>
+<section class="section disease-section" id="diseaseInfo"><div class="heading"><small>DISEASE KNOWLEDGE</small><h2 data-i18n="diseaseTitle">Understand the problem, not just the name.</h2><p data-i18n="diseaseText">Each supported disease entry can contain symptoms, likely causes, prevention and recovery guidance.</p></div><div class="info-grid"><article class="info-card"><span>🔎</span><h3 data-i18n="symptoms">Symptoms</h3><p data-i18n="symptomsText">What visible signs to look for on leaves, stems, fruit or soil.</p></article><article class="info-card"><span>🧪</span><h3 data-i18n="causes">Possible causes</h3><p data-i18n="causesText">Environmental stress, pathogens, pests or care-related factors.</p></article><article class="info-card"><span>🌱</span><h3 data-i18n="recoveryPlan">Recovery plan</h3><p data-i18n="recoveryPlanText">Clear, staged actions with safer care reminders and follow-up checks.</p></article><article class="info-card"><span>🛡️</span><h3 data-i18n="prevention">Prevention</h3><p data-i18n="preventionText">Practical habits that can reduce repeat problems.</p></article></div></section>
+<section class="section recovery" id="recovery"><div class="heading"><small>STEP 02 · RECOVERY</small><h2 data-i18n="recoveryTitle">Help your plant recover step by step.</h2><p data-i18n="recoveryText">After detection, CropCare AI can show a simple action plan and let you track later checks.</p></div><div class="recovery-card"><div class="health-ring"><span id="healthValue">—</span><small data-i18n="healthInsight">health insight</small></div><div class="recovery-copy"><span class="badge" data-i18n="recoveryGuide">RECOVERY GUIDE</span><h3 id="recoveryResultTitle">No plant checked yet</h3><div id="recoveryStatus"><p data-i18n="recoveryEmpty">Analyze an image to receive plant-specific guidance.</p></div></div><button class="btn primary-btn" type="button" onclick="startDetection()" data-i18n="checkAgain">Check Again →</button></div></section>
+<section class="section assistant" id="assistant"><div class="heading"><small>STEP 03 · AI ASSISTANT</small><h2 data-i18n="assistantTitle">Ask questions. Listen to answers.</h2><p data-i18n="assistantText">The assistant can explain a result in simpler language and read the answer aloud. Voice input depends on browser support.</p></div>
+<div class="assistant-layout"><div class="assistant-card"><div class="assistant-top"><div class="bot">🤖</div><div><b>CropCare Assistant</b><small id="assistantContext">General plant-care mode</small></div><span class="voice-ready">🔊 Voice</span></div>
+<div id="chatMessages" class="chat-messages" aria-live="polite"><div class="chat-message bot"><p data-i18n="assistantWelcome">Hi! Ask me about plant symptoms, recovery, watering, sunlight or your latest AI result.</p></div></div>
+<div class="suggestions"><button type="button" onclick="askSuggestion('How can I help this plant recover?')" data-i18n="suggestRecovery">🌱 Help it recover</button><button type="button" onclick="askSuggestion('What symptoms should I watch for?')" data-i18n="suggestSymptoms">🔎 Symptoms</button><button type="button" onclick="askSuggestion('How much sunlight does it need?')" data-i18n="suggestSunlight">☀️ Sunlight</button></div>
+<form id="chatForm" class="chat-form"><input id="chatInput" type="text" autocomplete="off" placeholder="Ask CropCare AI..." aria-label="Ask CropCare AI" data-i18n-placeholder="assistantPlaceholder"><button type="submit" class="btn primary-btn" data-i18n="send">Send</button></form>
+<div class="voice-row"><button id="voiceInputBtn" class="btn secondary-btn" type="button" title="Voice input" data-i18n="voiceInput">🎙 Voice input</button></div>
+<div class="audio-actions"><button class="btn secondary-btn" id="speakLastResult" type="button">🔊 <span data-i18n="listen">Listen</span></button><button class="btn secondary-btn" id="stopSpeech" type="button" data-i18n="stopAudio">⏹ Stop audio</button></div></div>
+<div class="access-card"><span class="big">🔊</span><h3 data-i18n="accessibilityTitle">Designed for accessibility</h3><p data-i18n="accessibilityText">For users who find reading or typing difficult, the website can combine large controls, voice input and text-to-speech.</p><ul><li data-i18n="accessibilityOne">Tap the microphone to speak when supported.</li><li data-i18n="accessibilityTwo">Tap “Listen” to hear the latest guidance.</li><li data-i18n="accessibilityThree">Switch language before speaking or listening.</li></ul></div></div></section>
+</main>
+<footer><div class="footer-brand"><span>🌱</span><b>CropCare AI</b></div><p data-i18n="footerText">AI-assisted plant health education and recovery guidance.</p><small data-i18n="footerWarning">Student Innovation Project • Always confirm serious crop disease with a qualified agricultural expert.</small></footer>
+<script src="/script.js"></script>
+</body>
+</html>
