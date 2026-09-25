@@ -35,11 +35,7 @@ load_dotenv(BACKEND_DIR / ".env")
 load_dotenv()
 
 app = Flask(__name__, static_folder=str(BASE_DIR), static_url_path="")
-CORS(app, origins=[
-    "https://crop-care-ai-beryl.vercel.app",
-    "https://crop-care-ai-dxnu-git-main-ctrlfreaks2.vercel.app",
-    "crop-care-m211xaujt-ctrlfreaks2.vercel.app"
-])
+CORS(app)
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 
