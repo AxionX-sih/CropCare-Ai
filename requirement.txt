@@ -1,8 +1,0 @@
-Flask
-gunicorn
-python-dotenv
-Pillow
-torch
-torchvision
-huggingface_hub
-supabase
