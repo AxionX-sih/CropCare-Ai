@@ -1,10 +1,31 @@
-dataset/
-weights/
-backend/uploads/
-*.pth
-*.pt
-*.zip
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+
+# Virtual environments
 .venv/
 venv/
+env/
+
+# Environment secrets
+.env
+backend/.env
+
+# User uploads
+backend/uploads/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Vercel
+.vercel/
+
+# Temporary files
+*.tmp
+*.temp

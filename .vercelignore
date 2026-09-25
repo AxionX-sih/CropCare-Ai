@@ -1,0 +1,16 @@
+dataset/
+backend/uploads/
+backend/*.pth
+backend/weights/
+weights/
+*.pt
+*.pth
+*.zip
+*.pyc
+__pycache__/
+.git/
+.env
+backend/.env
+node_modules/
+README.md
+test_leaf.jpg
