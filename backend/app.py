@@ -8,6 +8,7 @@ from pathlib import Path
 from datetime import datetime
 
 from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
 from dotenv import load_dotenv
 from PIL import Image
 import torch
@@ -34,6 +35,7 @@ load_dotenv(BACKEND_DIR / ".env")
 load_dotenv()
 
 app = Flask(__name__, static_folder=str(BASE_DIR), static_url_path="")
+CORS(app, origins=["https://crop-care-ai-beryl.vercel.app"])
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 

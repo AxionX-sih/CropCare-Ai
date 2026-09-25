@@ -1,6 +1,6 @@
 (() => {
 "use strict";
-
+const API_BASE_URL = "https://cropcare-ai-backend-o5v5.onrender.com";
 /* =========================================================
    CropCare AI - Complete Frontend
    10 Languages + Chat + Detection + Camera + Voice
@@ -2614,7 +2614,7 @@ async function analyzePlant() {
 
         const response =
             await fetch(
-                "/upload",
+                `${API_BASE_URL}/upload`,
                 {
                     method:
                         "POST",
@@ -3019,7 +3019,7 @@ async function savePrediction() {
 
         const response =
             await fetch(
-                "/predict",
+                `${API_BASE_URL}/predict`,
                 {
                     method:
                         "POST",
@@ -3123,7 +3123,7 @@ async function loadRecovery() {
 
         const response =
             await fetch(
-                `/recovery/${encodeURIComponent(
+                `${API_BASE_URL}/recovery/${encodeURIComponent(
                     crop
                 )}?disease=${encodeURIComponent(
                     disease
@@ -3390,7 +3390,7 @@ function setupChat() {
 
                 const response =
                     await fetch(
-                        "/chat",
+                        `${API_BASE_URL}/chat`,
                         {
                             method:
                                 "POST",
